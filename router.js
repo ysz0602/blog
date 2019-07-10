@@ -15,7 +15,7 @@ router.get('/login', function (req, res) {
     res.render('login.html')
 })
 
-router.post('/login', function (req, res) {
+router.post('/login', function (req, res, next) {
     // 1. 获取表单数据
     // 2. 查询数据库用户名密码是否正确
     // 3. 发送响应数据
@@ -25,10 +25,11 @@ router.post('/login', function (req, res) {
        password: md5(md5(body.password))
     }, function (err, user) {
         if (err) {
-            return res.status(500).json({
-                err_code: 500,
-                message: err.message
-            })
+            // return res.status(500).json({
+            //     err_code: 500,
+            //     message: err.message
+            // })
+            return next(err)
         }
         if (!user) {
             return res.status(200).json({
@@ -50,7 +51,7 @@ router.get('/register', function (req, res) {
     res.render('register.html')
 })
 
-router.post('/register', function (req, res) {
+router.post('/register', function (req, res, next) {
    // 1. 获取表单提交的数据
    // req.body
    // 2. 操作数据库
@@ -66,10 +67,11 @@ router.post('/register', function (req, res) {
         ]
     }, function (err, data) {
         if (err) {
-            return res.status(500).json({
-                err_code: 500,
-                message: "服务端错误"
-            })
+            // return res.status(500).json({
+            //     err_code: 500,
+            //     message: "服务端错误"
+            // })
+            return next(err)
         }
         console.log(data)
         // 如果邮箱已存在
@@ -86,10 +88,11 @@ router.post('/register', function (req, res) {
         body.password = md5(md5(body.password))
         new User(body).save(function (err, user) {
             if (err) {
-                return res.status(500).json({
-                    err_code: 500,
-                    message: "服务端错误"
-                })
+                // return res.status(500).json({
+                //     err_code: 500,
+                //     message: "服务端错误"
+                // })
+                return next(err)
             }
             // 注册成功，使用 Session 记录用户登录状态
             req.session.user = user

@@ -38,9 +38,24 @@ app.use(session({
 // 路由挂载到 app 中
 app.use(router)
 
+
 app.get('/', function (req,res) {
     res.render('index.html')
 })
+
+// 配置错误处理中间件
+app.use(function(err, req, res, next) {
+    res.status(500).send({
+        err_code: 500,
+        message: err.message
+    })
+})
+
+// 配置一个处理 404 的中间件
+app.use(function(req, res) {
+    res.render('404.html')
+})
+
 
 app.listen(3000, function () {
     console.log('running...')
